@@ -1,12 +1,12 @@
 Demonstrations of fdleak.
 
-Trace and display fd alloc/close to detect FD leaks in user-mode processes.
+Trace and display fd alloc/close to detect FD leaks processes.
 
 The tool's purpose is to know whether it is normal to call open/close in pairs during use..
 
 If the survival time is longer than the minimum allowable survival time, 
 and the fd number opened by the process is keeps growing, That will trigger
-fdleak to collect allocator information: `user-stack`,`max fd number`,`thread name`, `tid`..
+fdleak to collect allocator information: Process name, PID, Thread name, TID, Backtrace, Trace hits
 
 `In UNIX, everything is a file`, file leakage problems may occur when 
 most resources are used improperly, eg:
@@ -53,29 +53,29 @@ Trace and display over-threshold fds to detect FD leaks process, ctrl-c to exit.
          open+0xd4 [libpthread-2.31.so]
          [unknown]
 total 0
-dr-x------ 2 vachel vachel  0 10月 26 23:51 .
-dr-xr-xr-x 9 vachel vachel  0 10月 26 23:50 ..
-lrwx------ 1 vachel vachel 64 10月 26 23:51 0 -> /dev/pts/2
-lrwx------ 1 vachel vachel 64 10月 26 23:51 1 -> /dev/pts/2
-lr-x------ 1 vachel vachel 64 10月 26 23:51 10 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 103 -> /usr/share/code/v8_context_snapshot.bin
-lr-x------ 1 vachel vachel 64 10月 26 23:51 11 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 12 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 13 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 14 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 15 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 16 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 17 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 18 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 19 -> /dev/null
-lrwx------ 1 vachel vachel 64 10月 26 23:51 2 -> /dev/pts/2
-lr-x------ 1 vachel vachel 64 10月 26 23:51 20 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 21 -> /usr/share/code/v8_context_snapshot.bin
-lr-x------ 1 vachel vachel 64 10月 26 23:51 22 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 23 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 24 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 25 -> /dev/null
-lr-x------ 1 vachel vachel 64 10月 26 23:51 26 -> /dev/null
+dr-x------ 2 vachel vachel  0 oct 26 23:51 .
+dr-xr-xr-x 9 vachel vachel  0 oct 26 23:50 ..
+lrwx------ 1 vachel vachel 64 oct 26 23:51 0 -> /dev/pts/2
+lrwx------ 1 vachel vachel 64 oct 26 23:51 1 -> /dev/pts/2
+lr-x------ 1 vachel vachel 64 oct 26 23:51 10 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 103 -> /usr/share/code/v8_context_snapshot.bin
+lr-x------ 1 vachel vachel 64 oct 26 23:51 11 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 12 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 13 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 14 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 15 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 16 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 17 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 18 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 19 -> /dev/null
+lrwx------ 1 vachel vachel 64 oct 26 23:51 2 -> /dev/pts/2
+lr-x------ 1 vachel vachel 64 oct 26 23:51 20 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 21 -> /usr/share/code/v8_context_snapshot.bin
+lr-x------ 1 vachel vachel 64 oct 26 23:51 22 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 23 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 24 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 25 -> /dev/null
+lr-x------ 1 vachel vachel 64 oct 26 23:51 26 -> /dev/null
 
 ---->
 ^ fdleak thread open too much `/dev/null`
@@ -144,7 +144,7 @@ optional arguments:
 EXAMPLES:
     ./fdleak
             Trace all process alloc/close file descriptor.
-            default internal inspection frequency is 5 seconds,
+            default internal inspection frequency is 10 seconds,
             default minimim allowable survival time is 30 seconds.
     ./fdleak -p $(pidof allocs)
             Only monitor the allocation and close files of filtered pid

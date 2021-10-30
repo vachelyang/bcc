@@ -10,14 +10,14 @@ Trace and display fd alloc and close to detect FD leaks processes.
 The tool's purpose is to know whether it is normal to call open and close
 in pairs during use.
 
-Fdleak divided into 3 stages: loose L1, loose L2, strict L3
-The first two stages check whether the allocation number of fd has been
-increasing (for processes). If it keeps increasing, strict mode will be
-triggered,strictly check the time of each allocation and close. If the
-survivor is greater than 30s, strict inspection will print out the
-monitored Process name, PID, Thread name, TID, Backtrace, Trace Hits
+Fdleak divided into 2 stages: loosement check, stringent check
+The loose check whether the allocation number of fd has been increasing.
+If it keeps increasing, strict mode will be triggered,strictly check
+the time of each allocation and close. If the survivor is long term,
+then will print out the monitored Process name, PID, Thread name, TID,
+Backtrace, Trace Hits
 
-repr(In UNIX, everything is a file), file leakage problems may occur when
+In UNIX, everything is a file, file leakage problems may occur when
 most resources are used improperly, eg:
     file, socket, eventfd, pipe, ashmem, dmabuf, syncfence ...
 
@@ -66,7 +66,7 @@ List the files opened by the monitor process.
 #
 .B fdleak --lsof
 .TP
-Interval to scan for outstanding allocations \(in seconds\), default is 5s.
+Interval to scan for outstanding allocations \(in seconds\), default is 10s.
 #
 .B fdleak -i 10
 .TP
